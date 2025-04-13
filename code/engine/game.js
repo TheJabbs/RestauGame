@@ -11,7 +11,7 @@ class Game {
         this.canvas = document.getElementById('canvas');
         this.ctx = this.canvas.getContext('2d');
 
-        this.sprites = new Map()
+        this.sprites = new Map();
 
         this.sprites.set("obstacle", []);
         this.sprites.set("character", []);
@@ -22,25 +22,31 @@ class Game {
         this.bindKeyboardEvents();
     }
 
-    addSprite(sprite) {
-        this.sprites.push(sprite);
-    }
-    update() {
-        let updatedSprites = [];
-        for (let i = 0; i < this.sprites.length; i++) {
-            let sprite = this.sprites[i];
-
-            if (!sprite.update(this.sprites, this.keys)) {
-                updatedSprites.push(sprite);
-            }
+    addSprite(type, sprite) {
+        if (this.sprites.has(type)) {
+            this.sprites.get(type).push(sprite);
         }
-        this.sprites = updatedSprites;
     }
 
+    update() {
+        for (let [type, spriteArray] of this.sprites.entries()) {
+            let updatedSprites = [];
+            for (let i = 0; i < spriteArray.length; i++) {
+                let sprite = spriteArray[i];
+                if (!sprite.update(this.sprites, this.keys)) {
+                    updatedSprites.push(sprite);
+                }
+            }
+            this.sprites.set(type, updatedSprites);
+        }
+    }
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.sprites.forEach(sprite => sprite.draw(this.ctx));
+
+        for (let spriteArray of this.sprites.values()) {
+            spriteArray.forEach(sprite => sprite.draw(this.ctx));
+        }
     }
 
     animate() {
