@@ -13,10 +13,13 @@ class Game {
 
         this.sprites = new Map();
 
+
+        // for set up 7eton bara
         this.sprites.set("obstacle", []);
         this.sprites.set("character", []);
         this.sprites.set("npc", []);
         this.sprites.set("station", []);
+        this.sprites.set("ui", []);
 
         this.keys = {};
         this.bindKeyboardEvents();
@@ -33,6 +36,7 @@ class Game {
             let updatedSprites = [];
             for (let i = 0; i < spriteArray.length; i++) {
                 let sprite = spriteArray[i];
+
                 if (!sprite.update(this.sprites, this.keys)) {
                     updatedSprites.push(sprite);
                 }

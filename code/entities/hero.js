@@ -19,18 +19,6 @@ class Hero extends Character {
             'q': 0
         };
         this.keyDebounceTime = 10;
-
-
-        this.actionFrames = {
-            "knife_down": [16, 17, 18, 19],
-            "knife_left": [20, 21, 22, 23],
-            "knife_right": [24, 25, 26, 27],
-            "knife_up": [28, 29, 30, 31],
-            "extinguisher_down": [32, 33, 34, 35],
-            "extinguisher_left": [36, 37, 38, 39],
-            "extinguisher_right": [40, 41, 42, 43],
-            "extinguisher_up": [44, 45, 46, 47]
-        };
     }
 
     update(sprites, keys) {
@@ -81,14 +69,10 @@ class Hero extends Character {
     }
 
     handleAction(sprites, keys) {
+
         if ((keys['e'] || keys[' ']) && this.keyDebounce['e'] === 0 && this.keyDebounce[' '] === 0) {
             this.interactWithNearbyStation(sprites);
-            this.isPerformingAction = true;
-            this.actionCooldown = 15;
             this.keyDebounce['e'] = this.keyDebounceTime;
-            this.keyDebounce[' '] = this.keyDebounceTime;
-        } else if (this.actionCooldown <= 0) {
-            this.isPerformingAction = false;
         }
 
         if (keys['1'] && this.keyDebounce['1'] === 0 && !this.heldItem) {
@@ -128,9 +112,24 @@ class Hero extends Character {
             const dy = station.y - this.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
 
-            if (distance <= this.width/2 + station.width/2 + this.interactionRange) {
+            if (distance <= this.width / 2 + station.width / 2 + this.interactionRange) {
                 station.interact(this);
                 break;
+            }
+        }
+
+        const ui = sprites.get('obstacle')
+        for (let item of ui) {
+            const dx = item.x - this.x;
+            const dy = item.y - this.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance <= this.width / 2 + item.width / 2 + this.interactionRange) {
+                if(item instanceof Table) {
+                    console.log('hello')
+                    item.serve()
+                    break;
+                }
             }
         }
     }
@@ -149,48 +148,30 @@ class Hero extends Character {
         return droppedItem;
     }
 
-    getCurrentFrame() {
-        // Override the parent method to include action frames
-        if (this.isPerformingAction) {
-            if (this.hasKnife) {
-                const actionKey = `knife_${this.direction}`;
-                return this.actionFrames[actionKey][this.animationFrame];
-            } else if (this.hasFireExtinguisher) {
-                const actionKey = `extinguisher_${this.direction}`;
-                return this.actionFrames[actionKey][this.animationFrame];
-            }
-        }
-
-        // Fall back to regular character animation
-        return super.getCurrentFrame();
-    }
 
     draw(ctx) {
-        // Draw character with sprite sheet
         super.draw(ctx);
 
-        // Draw held item if any (and not tool)
         if (this.heldItem && this.heldItem !== "knife" && this.heldItem !== "fireExtinguisher") {
             ctx.fillStyle = this.getItemColor();
 
-            // Draw the item slightly in front of the character based on direction
             let itemX, itemY;
-            switch(this.direction) {
+            switch (this.direction) {
                 case "down":
-                    itemX = this.x + this.width/2 - 5;
+                    itemX = this.x + this.width / 2 - 5;
                     itemY = this.y + this.height;
                     break;
                 case "up":
-                    itemX = this.x + this.width/2 - 5;
+                    itemX = this.x + this.width / 2 - 5;
                     itemY = this.y - 10;
                     break;
                 case "left":
                     itemX = this.x - 10;
-                    itemY = this.y + this.height/2 - 5;
+                    itemY = this.y + this.height / 2 - 5;
                     break;
                 case "right":
                     itemX = this.x + this.width;
-                    itemY = this.y + this.height/2 - 5;
+                    itemY = this.y + this.height / 2 - 5;
                     break;
             }
 
@@ -199,15 +180,23 @@ class Hero extends Character {
     }
 
     getItemColor() {
-        switch(this.heldItem) {
-            case "knife": return "silver";
-            case "fireExtinguisher": return "red";
-            case "pizza": return "orange";
-            case "shawarma": return "tan";
-            case "fries": return "yellow";
-            case "soda": return "brown";
-            case "dough": return "beige";
-            default: return "green";
+        switch (this.heldItem) {
+            case "knife":
+                return "silver";
+            case "fireExtinguisher":
+                return "red";
+            case "pizza":
+                return "orange";
+            case "shawarma":
+                return "tan";
+            case "fries":
+                return "yellow";
+            case "soda":
+                return "brown";
+            case "dough":
+                return "beige";
+            default:
+                return "green";
         }
     }
 }
