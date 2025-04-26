@@ -6,7 +6,7 @@ class NpcSpawner extends Sprite {
         this.npcBuffer = [];
 
         for (let i = 0; i < 10; i++) {
-            let npc = new Npc(1100, 650  , 50, 50, 5);
+            let npc = new Npc(1100, 650, 50, 50, 5);
             this.npcBuffer.push(npc);
         }
 
@@ -29,6 +29,7 @@ class NpcSpawner extends Sprite {
     }
 
     update(sprite, key) {
+
         if (this.timeManager.hours >= 8 && this.timeManager.hours < 12) {
             this.maxActiveTable = Math.floor(this.tables.length / 2);
         } else if (this.timeManager.hours >= 12 && this.timeManager.hours < 16) {
@@ -42,19 +43,22 @@ class NpcSpawner extends Sprite {
         this.cooldown++;
 
 
-        if (this.countActiveTables() < this.maxActiveTable && this.cooldown  % 300 === 0) {
+        if (this.countActiveTables() < this.maxActiveTable && this.cooldown % 300 === 0) {
             if (this.npcBuffer.length > 0) {
                 let table = this.getUnOccupiedTable();
                 if (table) {
                     let npc = this.npcBuffer.pop();
                     if (npc) {
                         npc.setWhereToGo(table.x, table.y);
+                        sprite.get('npc').push(npc);
                         table.setNpc(npc);
                         table.isOccupied = true;
-                        sprite.get('npc').push(npc);
-                    }else{
-                        console.log('no npc available')
                     }
+                }
+            } else {
+                for (let i = 0; i < 10; i++) {
+                    let npc = new Npc(1100, 650, 50, 50, 5);
+                    this.npcBuffer.push(npc);
                 }
             }
         }
@@ -73,6 +77,7 @@ class NpcSpawner extends Sprite {
     getUnOccupiedTable() {
         //picks random unoccupied table
         let unOccupiedTables = this.tables.filter(table => !table.isOccupied);
+        console.log(unOccupiedTables.length)
         if (unOccupiedTables.length > 0) {
             let randomIndex = Math.floor(Math.random() * unOccupiedTables.length);
             return unOccupiedTables[randomIndex];

@@ -8,7 +8,7 @@ class Grid extends Sprite {
     }
 
     createGrid(pArrayOfSprites) {
-        let tableColorChanger =0
+        let tableNumber =0
 
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
@@ -20,11 +20,11 @@ class Grid extends Sprite {
                         let cell = new Obstacle(col * this.cellSize, row * this.cellSize, this.cellSize, this.cellSize);
                         pArrayOfSprites.get("obstacle").push(cell);
                     } else if (col % 3 === 0) {
-                        let color = tableColorChanger % 2 ? 'blue' : 'green'
-                        let cell = new Table(col * this.cellSize, row * this.cellSize, this.cellSize * 3, this.cellSize, color);
+                        let color = tableNumber % 2 ? 'blue' : 'green'
+                        let cell = new Table(col * this.cellSize, row * this.cellSize, this.cellSize * 3, this.cellSize, color, null, tableNumber);
                         console.log('table coordinates', col * this.cellSize, row * this.cellSize)
                         pArrayOfSprites.get("obstacle").push(cell);
-                        tableColorChanger++
+                        tableNumber++
                     }
                 } else {
                     let cell = new Cell(col * this.cellSize, row * this.cellSize, this.cellSize, this.cellSize);

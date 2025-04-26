@@ -36,7 +36,6 @@ class TimeManager extends Sprite {
     }
 
     getTime() {
-        // Format time as HH:MM
         return `${this.hours.toString().padStart(2, '0')}:${this.minutes.toString().padStart(2, '0')}`;
     }
 

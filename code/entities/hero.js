@@ -1,6 +1,6 @@
 class Hero extends Character {
-    constructor(x, y, width, height, speed, spriteSheet) {
-        super(x, y, width, height, speed, spriteSheet);
+    constructor(x, y, width, height, speed) {
+        super(x, y, width, height, speed);
 
         this.isPerformingAction = false;
         this.actionCooldown = 0;
@@ -77,8 +77,9 @@ class Hero extends Character {
 
         if (keys['1'] && this.keyDebounce['1'] === 0 && !this.heldItem) {
             this.hasKnife = !this.hasKnife;
+            console.log("picked up knife", this.hasKnife)
+
             if (this.hasKnife) {
-                this.heldItem = "knife";
                 this.hasFireExtinguisher = false;
             } else {
                 this.heldItem = null;
@@ -126,7 +127,6 @@ class Hero extends Character {
 
             if (distance <= this.width / 2 + item.width / 2 + this.interactionRange) {
                 if(item instanceof Table) {
-                    console.log('hello')
                     item.serve()
                     break;
                 }
