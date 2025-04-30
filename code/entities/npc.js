@@ -74,11 +74,18 @@ class Npc extends Character {
         {name: "Pizza Margarita", patience: 18},
         {name: "Nini's Pizza", patience: 35},
         {name: "Fries", patience: 15},
+        {name: "Fries", patience: 15},
+        {name: "Fries", patience: 15},
+        {name: "Fries", patience: 15},
+        {name: "Fries", patience: 15},
         {name: "Shawarma no pickles", patience: 20},
         {name: "Shawarma no garlic", patience: 20},
         {name: "Sharwarma only chicken", patience: 20},
         {name: "Shawarma", patience: 20},
-        {name: "Soda", patience: 10}
+        {name: "Soda", patience: 10},
+        {name: "Soda", patience: 10},
+        {name: "Soda", patience: 10},
+        {name: "Soda", patience: 10},
     ];
 
     generateOrder() {
@@ -99,7 +106,6 @@ class Npc extends Character {
             iteration++;
         }
 
-        //To convert to seconds
         this.patience *= 100
     }
 

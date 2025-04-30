@@ -49,7 +49,7 @@ class StickyNote extends Sprite{
 
         const lines = this.orders.split('\n');
         lines.forEach((line, index) => {
-            ctx.fillText(line, this.x + 10, this.y + 150 + index * 20); // Adjust line spacing with index * 20
+            ctx.fillText(line, this.x + 10, this.y + 150 + index * 20);
         });
     }
 }

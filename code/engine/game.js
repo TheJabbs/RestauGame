@@ -67,5 +67,9 @@ class Game {
         window.addEventListener('keyup', (e) => {
             this.keys[e.key] = false;
         });
+
+        window.addEventListener('blur', () => {
+            this.keys = {};
+        });
     }
 }

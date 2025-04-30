@@ -4,7 +4,7 @@ class Hero extends Character {
 
         this.isPerformingAction = false;
         this.actionCooldown = 0;
-        this.heldItem = null;
+        this.heldItem = "";
 
         this.interactionRange = 20;
 
@@ -69,15 +69,14 @@ class Hero extends Character {
     }
 
     handleAction(sprites, keys) {
-
-        if ((keys['e'] || keys[' ']) && this.keyDebounce['e'] === 0 && this.keyDebounce[' '] === 0) {
+        if ((keys['e'] || keys[' ']) && this.keyDebounce['e'] === 0) {
             this.interactWithNearbyStation(sprites);
             this.keyDebounce['e'] = this.keyDebounceTime;
         }
 
         if (keys['1'] && this.keyDebounce['1'] === 0 && !this.heldItem) {
             this.hasKnife = !this.hasKnife;
-            console.log("picked up knife", this.hasKnife)
+            console.log("picked up knife", this.hasKnife);
 
             if (this.hasKnife) {
                 this.hasFireExtinguisher = false;
@@ -126,7 +125,7 @@ class Hero extends Character {
             const distance = Math.sqrt(dx * dx + dy * dy);
 
             if (distance <= this.width / 2 + item.width / 2 + this.interactionRange) {
-                if(item instanceof Table) {
+                if (item instanceof Table) {
                     item.serve()
                     break;
                 }
