@@ -23,15 +23,8 @@ class StickyNote extends Sprite{
         })
         this.orders = orderList
 
-        if (hero) {
-            if(hero.hasKnife){
-                this.isHolding = "knife"
-            }
-
-            if(hero.hasFireExtinguisher){
-                this.isHolding = "fire extinguisher"
-            }
-        }
+        this.isHolding = hero.toolHeld === "" ? "nothing" : hero.toolHeld
+        this.isGrabbing = hero.heldItem === "" ? "nothing" : hero.heldItem
 
 
         return false;

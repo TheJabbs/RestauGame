@@ -23,7 +23,10 @@ class FriesStation extends Station {
     }
 
     interact(hero) {
-        super.interact(hero);
+        if(super.interact(hero)){
+            return
+        }
+
         if (this.IsCollectable && !this.IsBurning && hero.heldItem === "") {
             hero.heldItem = "fries";
             alert("Fries collected");

@@ -18,22 +18,22 @@ class Station extends Sprite {
     }
 
     update(sprites, keys) {
-        if (this.usageExtraTime !== 0 &&  this.usageTime + this.usageExtraTime < this.counter) {
+        if (this.usageExtraTime !== 0 && this.usageTime + this.usageExtraTime < this.counter) {
             this.IsBurning = true
             this.IsCollectable = false
         }
 
-        if(this.counter > this.usageTime && !this.IsBurning){
+        if (this.counter > this.usageTime && !this.IsBurning) {
             this.IsCollectable = true
         }
 
-        if(this.IsActive)
+        if (this.IsActive)
             this.counter++
 
         return false;
     }
 
-    draw(ctx){
+    draw(ctx) {
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
 
@@ -50,13 +50,19 @@ class Station extends Sprite {
     }
 
     interact(hero) {
-        if(this.IsBurning && hero.hasFireExtinguisher){
+        if (this.IsBurning && hero.toolHeld === Var.Tools.FIRE_EXTINGUISHER) {
+            hero.toolHeld = ""
             this.reset()
-        }else if(this.IsBurning && !hero.hasFireExtinguisher) {
+            return true
+        } else if (this.IsBurning && hero.toolHeld !== Var.Tools.FIRE_EXTINGUISHER) {
+            {
+                alert("You need a fire extinguisher to put out the fire!")
+            }
         }
+        return false
     }
 
-    reset(){
+    reset() {
         this.IsBurning = false
         this.IsCollectable = false
         this.IsActive = false

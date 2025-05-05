@@ -1,21 +1,21 @@
 class Hero extends Character {
+
     constructor(x, y, width, height, speed) {
         super(x, y, width, height, speed);
 
         this.isPerformingAction = false;
         this.actionCooldown = 0;
         this.heldItem = "";
+        this.toolHeld = "";
 
         this.interactionRange = 20;
-
-        this.hasKnife = false;
-        this.hasFireExtinguisher = false;
 
         this.keyDebounce = {
             'e': 0,
             ' ': 0,
             '1': 0,
             '2': 0,
+            '3': 0,
             'q': 0
         };
         this.keyDebounceTime = 10;
@@ -63,6 +63,17 @@ class Hero extends Character {
                 this.direction = "right";
                 moved = true;
             }
+
+            if(keys['z']) {
+                this.heldItem = "sauce";
+            }
+            if (keys['x']) {
+                this.heldItem = "cheese";
+            }
+            if (keys['c']) {
+                this.heldItem = "pepperoni";
+            }
+
         }
 
         this.isMoving = moved;
@@ -74,31 +85,18 @@ class Hero extends Character {
             this.keyDebounce['e'] = this.keyDebounceTime;
         }
 
-        if (keys['1'] && this.keyDebounce['1'] === 0 && !this.heldItem) {
-            this.hasKnife = !this.hasKnife;
-            console.log("picked up knife", this.hasKnife);
-
-            if (this.hasKnife) {
-                this.hasFireExtinguisher = false;
-            } else {
-                this.heldItem = null;
-            }
+        if (keys['1'] && this.keyDebounce['1'] === 0) {
+            this.toolHeld = Var.Tools.KNIFE;
             this.keyDebounce['1'] = this.keyDebounceTime;
         }
 
-        if (keys['2'] && this.keyDebounce['2'] === 0 && !this.heldItem) {
-            this.hasFireExtinguisher = !this.hasFireExtinguisher;
-            if (this.hasFireExtinguisher) {
-                this.heldItem = "fireExtinguisher";
-                this.hasKnife = false;
-            } else {
-                this.heldItem = null;
-            }
+        if (keys['2'] && this.keyDebounce['2'] === 0) {
+            this.toolHeld = Var.Tools.WOODEN_PLATE;
             this.keyDebounce['2'] = this.keyDebounceTime;
         }
 
-        if (keys['q'] && this.keyDebounce['q'] === 0 && this.heldItem && !this.hasKnife && !this.hasFireExtinguisher) {
-            this.heldItem = null;
+        if (keys['q'] && this.keyDebounce['q'] === 0) {
+            this.toolHeld =""
             this.keyDebounce['q'] = this.keyDebounceTime;
         }
     }
@@ -133,25 +131,11 @@ class Hero extends Character {
         }
     }
 
-    pickupItem(item) {
-        if (!this.heldItem && !this.hasKnife && !this.hasFireExtinguisher) {
-            this.heldItem = item;
-            return true;
-        }
-        return false;
-    }
-
-    dropItem() {
-        const droppedItem = this.heldItem;
-        this.heldItem = null;
-        return droppedItem;
-    }
-
 
     draw(ctx) {
         super.draw(ctx);
 
-        if (this.heldItem && this.heldItem !== "knife" && this.heldItem !== "fireExtinguisher") {
+        if (this.heldItem) {
             ctx.fillStyle = this.getItemColor();
 
             let itemX, itemY;
@@ -180,10 +164,6 @@ class Hero extends Character {
 
     getItemColor() {
         switch (this.heldItem) {
-            case "knife":
-                return "silver";
-            case "fireExtinguisher":
-                return "red";
             case "pizza":
                 return "orange";
             case "shawarma":
@@ -191,7 +171,7 @@ class Hero extends Character {
             case "fries":
                 return "yellow";
             case "soda":
-                return "brown";
+                return "cyan";
             case "dough":
                 return "beige";
             default:

@@ -12,5 +12,9 @@ game.addSprite('ui', new StickyNote())
 game.addSprite("station", new FriesStation(100, 200, 50, 50, null, 5,3));
 game.addSprite("station", new TrashBin(200, 200, 50, 50, null, 5,4));
 game.addSprite("station", new SodaStation(200, 100, 50, 50, null, 5,0));
+game.addSprite("station", new ShawarmaStation(100, 300, 50, 50, null, 5,1));
+game.addSprite("station", new PizzaOven(300, 200, 50, 50, null, 5,2));
+game.addSprite("station", new PizzaTable(300, 300, 50, 50, null, 5,6));
+game.addSprite("station", new Extinguisher(300, 100, 50, 50, null, 5,7));
 
 game.animate()

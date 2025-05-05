@@ -12,6 +12,8 @@ class Game {
         this.ctx = this.canvas.getContext('2d');
 
         this.sprites = new Map();
+        this.mouse = { x: 0, y: 0, clicked: false };
+
 
 
         // for set up 7eton bara
@@ -23,6 +25,8 @@ class Game {
 
         this.keys = {};
         this.bindKeyboardEvents();
+        this.bindMouseEvents();
+
     }
 
     addSprite(type, sprite) {
@@ -37,7 +41,7 @@ class Game {
             for (let i = 0; i < spriteArray.length; i++) {
                 let sprite = spriteArray[i];
 
-                if (!sprite.update(this.sprites, this.keys)) {
+                if (!sprite.update(this.sprites, this.keys, this.mouse)) {
                     updatedSprites.push(sprite);
                 }
             }
@@ -70,6 +74,27 @@ class Game {
 
         window.addEventListener('blur', () => {
             this.keys = {};
+        });
+    }
+    bindMouseEvents() {
+        this.canvas.addEventListener("mousemove", (e) => {
+            const rect = this.canvas.getBoundingClientRect();
+            this.mouse.x = e.clientX - rect.left;
+            this.mouse.y = e.clientY - rect.top;
+            //console.log(" mousemove:" + this.mouse.x + ", " + this.mouse.y);
+        });
+
+        this.canvas.addEventListener("mousedown", () => {
+            this.mouse.down = true;
+            this.mouse.clicked = true; // Tracks single clicks
+        });
+
+        this.canvas.addEventListener("mouseup", () => {
+            this.mouse.down = false;
+        });
+
+        this.canvas.addEventListener("mouseleave", () => {
+            this.mouse.down = false;
         });
     }
 }
