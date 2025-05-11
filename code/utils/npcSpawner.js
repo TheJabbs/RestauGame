@@ -1,8 +1,7 @@
 class NpcSpawner extends Sprite {
-    constructor(sprites) {
+    constructor(sprites, game) {
         super();
-
-        this.npcList = sprites.get('npc');
+        this.game = game
         this.npcBuffer = [];
 
         for (let i = 0; i < 10; i++) {
@@ -29,40 +28,57 @@ class NpcSpawner extends Sprite {
     }
 
     update(sprite, key) {
+        const hour = this.timeManager.hours;
+        const totalTables = this.tables.length;
 
-        if (this.timeManager.hours >= 8 && this.timeManager.hours < 12) {
-            this.maxActiveTable = Math.floor(this.tables.length / 2);
-        } else if (this.timeManager.hours >= 12 && this.timeManager.hours < 16) {
-            this.maxActiveTable = Math.floor(this.tables.length * 2 / 3);
-        } else if (this.timeManager.hours >= 16 && this.timeManager.hours < 20) {
-            this.maxActiveTable = Math.floor(this.tables.length / 2) + 1;
-        } else if (this.timeManager.hours >= 20 && this.timeManager.hours < 24) {
-            this.maxActiveTable = Math.floor(this.tables.length * 2 / 3) + 1;
+        if (hour >= 8 && hour < 12) {
+            this.maxActiveTable = Math.floor(totalTables / 2);
+        } else if (hour >= 12 && hour < 16) {
+            this.maxActiveTable = Math.floor((2 / 3) * totalTables);
+        } else if (hour >= 16 && hour < 20) {
+            this.maxActiveTable = Math.floor(totalTables / 2) + 1;
+        } else if (hour >= 20 && hour < 24) {
+            this.maxActiveTable = Math.floor((2 / 3) * totalTables) + 1;
         }
 
         this.cooldown++;
 
+        // Get time manager
+        const timerMng = sprite.get('ui').find(o => o instanceof TimeManager);
+        const currentTime = timerMng?.getTime() ?? "";
 
-        if (this.countActiveTables() < this.maxActiveTable && this.cooldown % 300 === 0) {
+        // Clear buffer at midnight
+        if (currentTime === "24:00") {
+            this.npcBuffer = [];
+            return;
+        }
+
+        const needNpc = this.countActiveTables() < this.maxActiveTable && this.cooldown % 300 === 0;
+
+        if (needNpc) {
             if (this.npcBuffer.length > 0) {
-                let table = this.getUnOccupiedTable();
+                const table = this.getUnOccupiedTable();
                 if (table) {
-                    let npc = this.npcBuffer.pop();
-                    if (npc) {
-                        npc.setWhereToGo(table.x, table.y);
-                        sprite.get('npc').push(npc);
-                        table.setNpc(npc);
-                        table.isOccupied = true;
-                    }
+                    const npc = this.npcBuffer.pop();
+                    npc.setWhereToGo(table.x, table.y);
+                    sprite.get('npc').push(npc);
+                    table.setNpc(npc);
+                    table.isOccupied = true;
                 }
             } else {
                 for (let i = 0; i < 10; i++) {
-                    let npc = new Npc(1100, 650, 50, 50, 5);
+                    const npc = new Npc(1100, 650, 50, 50, 5);
                     this.npcBuffer.push(npc);
+                }
+
+                if (sprite.get('npc').length === 0) {
+                    alert("Game Over!");
+                    this.game.previousLevel();
                 }
             }
         }
     }
+
 
     countActiveTables() {
         let count = 0;
@@ -77,7 +93,6 @@ class NpcSpawner extends Sprite {
     getUnOccupiedTable() {
         //picks random unoccupied table
         let unOccupiedTables = this.tables.filter(table => !table.isOccupied);
-        console.log(unOccupiedTables.length)
         if (unOccupiedTables.length > 0) {
             let randomIndex = Math.floor(Math.random() * unOccupiedTables.length);
             return unOccupiedTables[randomIndex];

@@ -10,6 +10,8 @@ class Hero extends Character {
 
         this.interactionRange = 20;
 
+
+
         this.keyDebounce = {
             'e': 0,
             ' ': 0,
@@ -19,9 +21,11 @@ class Hero extends Character {
             'q': 0
         };
         this.keyDebounceTime = 10;
+
     }
 
     update(sprites, keys) {
+
         if (this.actionCooldown > 0) {
             this.actionCooldown--;
         }
@@ -42,6 +46,7 @@ class Hero extends Character {
     handleMovement(keys) {
         let moved = false;
 
+
         if (!this.isPerformingAction) {
             if (keys['w'] || keys['ArrowUp']) {
                 this.y -= this.speed;
@@ -52,26 +57,19 @@ class Hero extends Character {
                 this.y += this.speed;
                 this.direction = "down";
                 moved = true;
+
             }
             if (keys['a'] || keys['ArrowLeft']) {
                 this.x -= this.speed;
                 this.direction = "left";
                 moved = true;
+
             }
             if (keys['d'] || keys['ArrowRight']) {
                 this.x += this.speed;
                 this.direction = "right";
                 moved = true;
-            }
 
-            if(keys['z']) {
-                this.heldItem = "sauce";
-            }
-            if (keys['x']) {
-                this.heldItem = "cheese";
-            }
-            if (keys['c']) {
-                this.heldItem = "pepperoni";
             }
 
         }
@@ -96,7 +94,7 @@ class Hero extends Character {
         }
 
         if (keys['q'] && this.keyDebounce['q'] === 0) {
-            this.toolHeld =""
+            this.toolHeld = ""
             this.keyDebounce['q'] = this.keyDebounceTime;
         }
     }
@@ -124,7 +122,7 @@ class Hero extends Character {
 
             if (distance <= this.width / 2 + item.width / 2 + this.interactionRange) {
                 if (item instanceof Table) {
-                    item.serve()
+                    item.serve(this)
                     break;
                 }
             }
@@ -178,4 +176,7 @@ class Hero extends Character {
                 return "green";
         }
     }
+
+
+
 }

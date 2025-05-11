@@ -22,7 +22,6 @@ class Grid extends Sprite {
                     } else if (col % 3 === 0) {
                         let color = tableNumber % 2 ? 'blue' : 'green'
                         let cell = new Table(col * this.cellSize, row * this.cellSize, this.cellSize * 3, this.cellSize, color, null, tableNumber);
-                        console.log('table coordinates', col * this.cellSize, row * this.cellSize)
                         pArrayOfSprites.get("obstacle").push(cell);
                         tableNumber++
                     }

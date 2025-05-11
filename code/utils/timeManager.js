@@ -1,7 +1,7 @@
 class TimeManager extends Sprite {
     constructor() {
         super();
-        this.hours = 8;
+        this.hours = 23;
         this.minutes = 0;
         this.isTimeUp = false;
         this.timeLimit = 24;
@@ -29,7 +29,7 @@ class TimeManager extends Sprite {
     }
 
     reset() {
-        this.hours = 8; // Reset to 8:00
+        this.hours = 8;
         this.minutes = 0;
         this.isTimeUp = false;
         this.timeElapsed = 0;

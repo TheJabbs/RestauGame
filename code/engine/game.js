@@ -1,9 +1,19 @@
 class Sprite {
     constructor() { }
 
-    update(sprite, key) { }
+    update(sprites, keys, mouse) {
+        return false; // Return false to keep the sprite alive
+    }
 
     draw(ctx) { }
+}
+
+class Level {
+    constructor(game) {
+        this.game = game;
+    }
+
+    initialize() { }
 }
 
 class Game {
@@ -11,31 +21,72 @@ class Game {
         this.canvas = document.getElementById('canvas');
         this.ctx = this.canvas.getContext('2d');
 
+        // Keep the sprites map for type-based organization
         this.sprites = new Map();
-        this.mouse = { x: 0, y: 0, clicked: false };
 
+        // Track mouse state
+        this.mouse = { x: 0, y: 0, clicked: false, down: false };
 
-
-        // for set up 7eton bara
-        this.sprites.set("obstacle", []);
-        this.sprites.set("character", []);
-        this.sprites.set("npc", []);
-        this.sprites.set("station", []);
-        this.sprites.set("ui", []);
-
+        // Track keyboard state
         this.keys = {};
+
+        // Level management
+        this.levels = [];
+        this.currentLevelIndex = 0;
+        this.pendingLevelIndex = null;
+
+        // Bind event handlers
         this.bindKeyboardEvents();
         this.bindMouseEvents();
-
     }
 
-    addSprite(type, sprite) {
-        if (this.sprites.has(type)) {
-            this.sprites.get(type).push(sprite);
+    // Sprite type management
+    addSpriteType(type) {
+        if (!this.sprites.has(type)) {
+            this.sprites.set(type, []);
         }
     }
 
+    addSprite(type, sprite) {
+        if (!this.sprites.has(type)) {
+            this.addSpriteType(type);
+        }
+        this.sprites.get(type).push(sprite);
+    }
+
+    // Level management
+    addLevel(level) {
+        this.levels.push(level);
+
+        if (this.levels.length === 1) {
+            this.setLevel(0);
+        }
+    }
+
+    setLevel(index) {
+        if (index >= 0 && index < this.levels.length) {
+            // Clear all sprites
+            this.sprites = new Map();
+            this.currentLevelIndex = index;
+            this.levels[index].initialize();
+        }
+    }
+
+    changeLevel(index) {
+        this.pendingLevelIndex = index;
+    }
+
+    nextLevel() {
+        this.changeLevel(this.currentLevelIndex + 1);
+    }
+
+    previousLevel() {
+        this.changeLevel(this.currentLevelIndex - 1);
+    }
+
+    // Game loop methods
     update() {
+        // Update all sprites by type
         for (let [type, spriteArray] of this.sprites.entries()) {
             let updatedSprites = [];
             for (let i = 0; i < spriteArray.length; i++) {
@@ -47,11 +98,21 @@ class Game {
             }
             this.sprites.set(type, updatedSprites);
         }
+
+        // Reset one-frame mouse events
+        this.mouse.clicked = false;
+
+        // Handle pending level change
+        if (this.pendingLevelIndex !== null) {
+            this.setLevel(this.pendingLevelIndex);
+            this.pendingLevelIndex = null;
+        }
     }
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+        // Draw all sprites
         for (let spriteArray of this.sprites.values()) {
             spriteArray.forEach(sprite => sprite.draw(this.ctx));
         }
@@ -63,6 +124,7 @@ class Game {
         requestAnimationFrame(() => this.animate());
     }
 
+    // Event handling
     bindKeyboardEvents() {
         window.addEventListener('keydown', (e) => {
             this.keys[e.key] = true;
@@ -76,12 +138,12 @@ class Game {
             this.keys = {};
         });
     }
+
     bindMouseEvents() {
         this.canvas.addEventListener("mousemove", (e) => {
             const rect = this.canvas.getBoundingClientRect();
             this.mouse.x = e.clientX - rect.left;
             this.mouse.y = e.clientY - rect.top;
-            //console.log(" mousemove:" + this.mouse.x + ", " + this.mouse.y);
         });
 
         this.canvas.addEventListener("mousedown", () => {

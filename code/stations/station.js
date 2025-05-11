@@ -15,9 +15,18 @@ class Station extends Sprite {
         this.usageExtraTime = usageExtraTime * 100;
         this.counter = 0
 
+
+        this.soundPlayed  = false
+
     }
 
     update(sprites, keys) {
+        if(this.usageExtraTime !== 0 && !this.soundPlayed && (this.usageTime + this.usageExtraTime) /2 < this.counter){
+            const sound = new Audio(Var.Sounds.BURNING)
+            sound.play().catch(error => console.error('Error playing sound:', error));
+            this.soundPlayed = true
+        }
+
         if (this.usageExtraTime !== 0 && this.usageTime + this.usageExtraTime < this.counter) {
             this.IsBurning = true
             this.IsCollectable = false
@@ -52,6 +61,8 @@ class Station extends Sprite {
     interact(hero) {
         if (this.IsBurning && hero.toolHeld === Var.Tools.FIRE_EXTINGUISHER) {
             hero.toolHeld = ""
+            const sound = new Audio(Var.Sounds.FIRE_EXTINGUISHER)
+            sound.play().catch(error => console.error('Error playing sound:', error));
             this.reset()
             return true
         } else if (this.IsBurning && hero.toolHeld !== Var.Tools.FIRE_EXTINGUISHER) {

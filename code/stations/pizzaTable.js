@@ -5,8 +5,7 @@ class PizzaTable extends Station {
     }
 
     update(sprites, keys) {
-        console.log(this.tableContent.toString())
-        console.log(this.getPizzaType())
+
     }
 
 draw(ctx) {
@@ -87,20 +86,22 @@ draw(ctx) {
         } else if (this.tableContent.length === 0) {
             this.tableContent.push("doe")
             this.missing = "sauce"
+            this.playSound(this.tableContent.length)
         } else if (this.tableContent.length === 1 && hero.heldItem === "sauce") {
             this.tableContent.push("sauce")
-            alert("Pizza dough and sauce combined")
             hero.heldItem = ""
             this.missing = "cheese"
+            this.playSound(this.tableContent.length)
+
         } else if (this.tableContent.length === 2 && hero.heldItem === "cheese") {
             this.tableContent.push("cheese")
-            alert("Pizza dough, sauce and cheese combined")
             hero.heldItem = ""
             this.missing = ""
+            this.playSound(this.tableContent.length)
+
         } else if (this.tableContent.length > 2 && !this.checkForDuplicateTopping(hero.heldItem) && this.isAllowedTopping(hero.heldItem)) {
             this.tableContent.push(hero.heldItem)
             hero.heldItem = ""
-            alert('Added ' + hero.heldItem + ' to the pizza')
         } else {
             alert(`I think this pizza is missing ${this.missing}`)
         }
@@ -146,11 +147,16 @@ draw(ctx) {
     getToppingColor(topping) {
         const colors = {
             pepperoni: '#ff4500',
-            mushrooms: '#d2b48c',
-            olives: '#556b2f',
+            mushroom: '#d2b48c',
+            olive: '#556b2f',
             onions: '#f5f5dc',
-            peppers: '#ffcc00'
+            green_pepper: '#ffcc00'
         };
         return colors[topping] || '#000000'; // Default to black if topping is unknown
+    }
+
+    playSound(number){
+        const sound = new Audio(Var.Sounds.TOPPING[number%2])
+        sound.play().catch(error => console.error('Error playing sound:', error));
     }
 }

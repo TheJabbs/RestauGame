@@ -29,7 +29,6 @@ class Character extends Sprite {
         const obstacles = sprites.get("obstacle");
         for (let obstacle of obstacles) {
             if (this.collidesWith(obstacle)) {
-                console.log(obstacle instanceof Obstacle);
                 this.x = this.prevX;
                 this.y = this.prevY;
                 break;
@@ -39,7 +38,6 @@ class Character extends Sprite {
         const stations = sprites.get("station");
         for (let station of stations) {
             if (this.collidesWith(station)) {
-                console.log(station instanceof Station);
                 this.x = this.prevX;
                 this.y = this.prevY;
                 break;
